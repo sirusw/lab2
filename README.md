@@ -14,12 +14,12 @@ The two classes you will write are `IndexMySQL.java` and `IndexPostgreSQL.java`.
 
 - +1 mark - Method `connect()` to make a connection to the database.
 - +1 mark - Method `close()` to close the connection to the database.
-- +1 mark - Method `drop()` to drop the table "bench" that we will be using.
-- +1 mark - Method `create()` to create a "bench" table with fields:
-  - id - integer, must auto-increment
-  - val1 - integer (starts at 1 and each record increases by 1) 
-  - val2 - integer (val1 % 10)
-  - str1 - varchar(20) = "Test"+val1
+- +1 mark - Method `drop()` to drop the table `bench` that we will be using.
+- +1 mark - Method `create()` to create a `bench` table with fields:
+  - `id` - integer, must auto-increment
+  - `val1` - integer (starts at 1 and each record increases by 1) 
+  - `val2` - integer (`val1 % 10`)
+  - `str1` - varchar(20) = `"Test"+val1`
 - +2 marks - Method `insert()` to add the records as described above. **You must use PreparedStatements to get full marks.**
 - +2 marks - Write the method `addindex1()` that creates a unique index called `idxBenchVal1` on `val1`.  It then runs an explain with the query: `SELECT * FROM bench WHERE val1 = 500`.
 - +2 marks - Write the method `addindex2()` that creates a index called `idxBenchVal2Val1` on `(val2,val1)`.  It then runs an explain with the query: `SELECT * FROM bench WHERE val2 = 0 and val1 > 100`.
