@@ -12,19 +12,18 @@ You will repeat the same tasks for both PostgreSQL and MySQL.  Expect to consult
 
 The two classes you will write are `IndexMySQL.java` and `IndexPostgreSQL.java`.  The test classes are `TestIndexMySQL.java` and `TestIndexPostgreSQL.java` respectively.  You will fill in the methods requested (search for **TODO**).  Marks for each method are below.  You receive the marks if you pass the JUnit tests AND have followed the requirements asked in the question (including documentation and proper formatting).
 
-- +1 mark - Method connect() to make a connection to the database.
-- +1 mark - Method close() to close the connection to the database.
-- +1 mark - Method drop() to drop the table "bench" that we will be using.
-- +1 mark - Method create() to create a "bench" table with fields:
+- +1 mark - Method `connect()` to make a connection to the database.
+- +1 mark - Method `close()` to close the connection to the database.
+- +1 mark - Method `drop()` to drop the table "bench" that we will be using.
+- +1 mark - Method `create()` to create a "bench" table with fields:
   - id - integer, must auto-increment
   - val1 - integer (starts at 1 and each record increases by 1) 
   - val2 - integer (val1 % 10)
-	- str1 - varchar(20) = "Test"+val1
-- +2 marks - Method insert() to add the records as described above.  <strong>You must use PreparedStatements to get full marks.</strong>
-</li>
-- +2 marks - Write the method addindex1() that creates a unique index called idxBenchVal1 on val1.  It then runs an explain with the query: SELECT * FROM bench WHERE val1 = 500.</li>
-- +2 marks - Write the method addindex2() that creates a index called idxBenchVal2Val1 on (val2,val1).  It then runs an explain with the query: SELECT * FROM bench WHERE val2 = 0 and val1 > 100.
-- Bonus: +1 mark if determine how to make insert() faster than inserting just one row at a time
+  - str1 - varchar(20) = "Test"+val1
+- +2 marks - Method `insert()` to add the records as described above. **You must use PreparedStatements to get full marks.**
+- +2 marks - Write the method `addindex1()` that creates a unique index called `idxBenchVal1` on `val1`.  It then runs an explain with the query: `SELECT * FROM bench WHERE val1 = 500`.
+- +2 marks - Write the method `addindex2()` that creates a index called `idxBenchVal2Val1` on `(val2,val1)`.  It then runs an explain with the query: `SELECT * FROM bench WHERE val2 = 0 and val1 > 100`.
+- Bonus: +1 mark if determine how to make `insert()` faster than inserting just one row at a time
 
 **Total Marks: 10** 
 
