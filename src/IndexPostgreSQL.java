@@ -55,7 +55,10 @@ public class IndexPostgreSQL
 		System.out.println("Connecting to database.");
 		// Note: Must assign connection to instance variable as well as returning it back to the caller
 		// TODO: Make a connection to the database and store connection in con variable before returning it.
-		return null;	                       
+		Connection con = DriverManager.getConnection(url,uid,pw);
+		this.con = con;
+		
+		return con;  	                       
 	}
 	
 	/**
@@ -65,6 +68,12 @@ public class IndexPostgreSQL
 	{
 		System.out.println("Closing database connection.");
 		// TODO: Close the database connection.  Catch any exception and print out if it occurs.			
+		try{
+			this.con.close();
+		}	
+		catch (SQLException ex){
+			System.out.println(ex);
+		}
 	}
 	
 	/**
@@ -73,7 +82,15 @@ public class IndexPostgreSQL
 	public void drop()
 	{
 		System.out.println("Dropping table bench.");
-		// TODO: Drop the table bench.  Catch any exception and print out if it occurs.			
+		// TODO: Drop the table bench.  Catch any exception and print out if it occurs.	
+		try{ 
+			String SQL = "drop table if exists bench";
+			Statement stmt = con.createStatement();
+			int rowcount = stmt.executeUpdate(SQL);
+		}
+		catch (SQLException ex){
+			System.out.print(ex);
+		}		
 	}
 	
 	/**
@@ -87,7 +104,25 @@ public class IndexPostgreSQL
 	public void create() throws SQLException
 	{
 		System.out.println("Creating table bench.");
-		// TODO: Create the table bench.			
+		// TODO: Create the table bench.
+		String SQL =
+					//Identity(1,1)
+					"create table bench " +
+						"(id serial primary key," +
+						"val1 int not null," +
+						"val2 int not null," +
+						"str1 varchar(20)" +
+						");" ;
+						//+ "create index ind on bench (val1)"
+						//+ "alter table bench modify column val1 int auto_increment;";		
+									
+		try{
+			Statement stmt = con.createStatement();
+		 	int rowcount = stmt.executeUpdate(SQL);
+		}
+		catch (SQLException ex) {
+			System.out.println(ex);
+		}			
 	}
 	
 	/**
@@ -96,7 +131,26 @@ public class IndexPostgreSQL
 	public void insert(int numRecords) throws SQLException
 	{
 		System.out.println("Inserting records.");
-		// TODO: Insert records		
+		// TODO: Insert records	
+		String SQL = "insert into bench (val1, val2, str1) Values (?, ?, ?)";
+
+		for(int j = 0; j < numRecords-1; j++){
+			SQL += ",(?,?,?)";
+		}
+		
+		try{
+			PreparedStatement pstmt = this.con.prepareStatement(SQL);
+			for(int i = 1; i <= numRecords; i++){
+				pstmt.setInt((i-1)*3+1,i);
+				pstmt.setDouble((i-1)*3+2,i % 10);
+				pstmt.setString((i-1)*3+3,"Test"+i);
+			}
+			int rowcount = pstmt.executeUpdate();
+			System.out.println(rowcount+" rows inserted.");
+		}
+		catch (SQLException ex){
+			System.out.println(ex);
+		}	
 	}
 	
 	/**
@@ -113,7 +167,14 @@ public class IndexPostgreSQL
 		// TODO: Create index
 		
 		// TODO: Do explain with query: SELECT * FROM bench WHERE val1 = 500
-		return null;	
+		String SQL = "create UNIQUE INDEX idxBenchVal1 ON bench (val1);"; 
+		Statement stmt = this.con.createStatement();
+		int row = stmt.executeUpdate(SQL);
+		
+		// TODO: Do explain with query: SELECT * FROM bench WHERE val1 = 500
+		ResultSet rslt = stmt.executeQuery("explain SELECT * FROM bench WHERE val1 = 500;");
+		//System.out.println(rslt);
+		return rslt;
 	}
 	
 	/**
@@ -130,7 +191,14 @@ public class IndexPostgreSQL
 		// TODO: Create index
 		
 		// TODO: Do explain with query: SELECT * FROM bench WHERE val2 = 0 and val1 > 100;
-		return null;	
+		String SQL = "create INDEX idxBenchVal2Val1 ON bench (val2,val1);";
+		Statement stmt = this.con.createStatement();
+		int row = stmt.executeUpdate(SQL);
+		
+		//System.out.println(rslt);
+		// TODO: Do explain with query: SELECT * FROM bench WHERE val2 = 0 and val1 > 100;
+		ResultSet rslt =stmt.executeQuery(("explain select * from bench where  val2 =0 and val1 >100"));
+		return rslt;
 	}
 	
 	/*
